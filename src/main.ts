@@ -1,6 +1,19 @@
-import { createApp } from 'vue'
-import App from './App.vue'
-import router from './router'
-import store from './store'
+import { createApp } from "vue";
+import App from "./App.vue";
+import router from "./router";
+import { createPinia } from "pinia";
+import { globalCookiesConfig } from "vue3-cookies";
+import { autoAnimatePlugin } from "@formkit/auto-animate/vue";
 
-createApp(App).use(store).use(router).mount('#app')
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap";
+
+globalCookiesConfig({
+    expireTimes: "30d",
+});
+
+createApp(App)
+    .use(router)
+    .use(createPinia())
+    .use(autoAnimatePlugin)
+    .mount("#app");

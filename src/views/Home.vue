@@ -1,18 +1,41 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
-  </div>
+    <div class="container">
+        <div class="row">
+            <div
+                class="col-12 col-md-6 col-lg-3"
+                v-for="product in productStore.products"
+                :key="product.id"
+            >
+                <ProductCard :product="product" />
+            </div>
+        </div>
+    </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
+import { defineComponent, onMounted } from "vue";
+import { useProductStore } from "@/store/productStore";
+import ProductCard from "@/components/ProductCard.vue";
+import { useCartStore } from "@/store/cartStore";
 
 export default defineComponent({
-  name: 'Home',
-  components: {
-    HelloWorld,
-  },
+    name: "Home",
+    components: { ProductCard },
+    setup() {
+        const productStore = useProductStore();
+        const cartStore = useCartStore();
+
+        onMounted(() => {
+            productStore.getProducts();
+        });
+
+        const clearCart = () => {
+            if (!cartStore.cart) return;
+
+            cartStore.clearCart(cartStore.cart?.id);
+        };
+
+        return { productStore, clearCart };
+    },
 });
 </script>

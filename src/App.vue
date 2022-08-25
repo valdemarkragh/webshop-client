@@ -1,30 +1,50 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </div>
-  <router-view/>
+    <div class="container-fluid main-bg bg-dark px-0">
+        <Navbar />
+        <router-view />
+    </div>
 </template>
 
+<script lang="ts">
+import { defineComponent, onMounted } from "vue";
+import { useCartStore } from "./store/cartStore";
+import { useCookies } from "vue3-cookies";
+import Navbar from "@/components/Navbar.vue";
+
+export default defineComponent({
+    name: "App",
+    components: { Navbar },
+    setup() {
+        const cartStore = useCartStore();
+        const { cookies } = useCookies();
+
+        onMounted(() => {
+            let cartId = cookies.get("cartId");
+            if (!cartId) {
+                const uniqueId = Date.now().toString();
+                cookies.set("cartId", uniqueId);
+                cartId = uniqueId;
+            }
+            cartStore.getCart(cartId);
+        });
+    },
+});
+</script>
+
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+* {
+    box-sizing: border-box;
 }
 
-#nav {
-  padding: 30px;
+html {
+    margin: 0;
+}
 
-  a {
-    font-weight: bold;
-    color: #2c3e50;
+.cursor-pointer {
+    cursor: pointer;
+}
 
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
+.main-bg {
+    min-height: 100vh;
 }
 </style>
